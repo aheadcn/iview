@@ -6,9 +6,9 @@
 }
 
 .active(@color: @input-hover-border-color) {
-    border-color: tint(@color, 20%);
+    // border-color: tint(@color, 20%);
     outline: 0;
-    box-shadow: 0 0 0 2px fade(@color, 20%);
+    // box-shadow: 0 0 0 2px fade(@color, 20%);
 }
 .active-error() {
     border-color: @error-color;
@@ -27,7 +27,7 @@
 }
 
 .input-large() {
-    font-size: @font-size-base;
+    font-size: @font-size-large;
     padding: @input-padding-vertical-large @input-padding-horizontal;
     height: @input-height-large;
 }
@@ -44,7 +44,7 @@
     height: @input-height-base;
     line-height: @line-height-base;
     padding: @input-padding-vertical-base @input-padding-horizontal;
-    font-size: @font-size-small;
+    font-size: @font-size-base;
     border: 1px solid @input-border-color;
     border-radius: @btn-border-radius;
     color: @input-color;
@@ -102,11 +102,14 @@
     width: 100%;
     border-collapse: separate;
     position: relative;
-    font-size: @font-size-small;
-    top: 1px; // fixed when using in form inline,
+    font-size: @font-size-base;
+
+    .ivu-form-inline &{
+        top: 1px; // fixed when using in form inline,
+    }
 
     &-large{
-        font-size: @font-size-base;
+        font-size: @font-size-large;
     }
 
     // Undo padding and float of grid classes

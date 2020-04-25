@@ -21,7 +21,7 @@
         "types"
     ],
     "scripts": {
-        "dev": "webpack-dev-server --content-base test/ --open --inline --hot --compress --history-api-fallback --port 8081 --config build/webpack.dev.config.js",
+        "dev": "webpack-dev-server --content-base test/ --open --inline --hot --compress --history-api-fallback --port 8082 --config build/webpack.dev.config.js",
         "dev:s": "webpack-dev-server --content-base test/ --open --inline --hot --compress --history-api-fallback --port 8081 --host 0.0.0.0 --config build/webpack.dev.config.js",
         "dist:style": "gulp --gulpfile build/build-style.js",
         "dist:dev": "webpack --config build/webpack.dist.dev.config.js",
@@ -38,7 +38,7 @@
         "type": "git",
         "url": "https://github.com/iview/iview"
     },
-    "author": "Aresn",
+    "author": "chenjie",
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/iview/iview/issues"
@@ -51,8 +51,7 @@
         "lodash.throttle": "^4.1.1",
         "popper.js": "^1.14.6",
         "tinycolor2": "^1.4.1",
-        "v-click-outside-x": "^4.0.19",
-        "wec-iview": "^1.0.1"
+        "v-click-outside-x": "^4.0.19"
     },
     "peerDependencies": {
         "vue": "^2.5.2"

@@ -2,32 +2,28 @@
     <div
         ref="reference"
         tabindex="0"
-        @click="handleClick"
-        @keydown.esc="handleEscape"
-        @keydown.enter="handleEnter"
-        @keydown.left="handleArrow($event, 'x', left)"
-        @keydown.right="handleArrow($event, 'x', right)"
-        @keydown.up="handleArrow($event, 'y', up)"
-        @keydown.down="handleArrow($event, 'y', down)"
-        @blur="blurColor"
-        @focus="focusColor"
     >
         <template v-for="(item, index) in list">
-            <div
-                :key="item + ':' + index"
-                :class="[prefixCls + '-picker-colors-wrapper']">
+            <div title="右键删除"
+                 :key="item + ':' + index"
+                 :class="[prefixCls + '-picker-colors-wrapper']"
+                 @click="handleClick"
+                 @contextmenu.prevent="deleteColor($event,index)"
+            >
                 <div :data-color-id="index">
                     <div
                         :style="{background: item}"
                         :class="[prefixCls + '-picker-colors-wrapper-color']"
                     ></div>
-                    <div
-                        :ref="'color-circle-' + index"
-                        :class="[prefixCls + '-picker-colors-wrapper-circle', hideClass]"></div>
                 </div>
             </div>
             <br v-if="lineBreak(list, index)">
         </template>
+        <div :class="[prefixCls + '-picker-colors-wrapper']" @click="setRecommendColor">
+            <div title="添加颜色" :class="[prefixCls + '-picker-colors-wrapper-color', prefixCls + '-picker-colors-add']">
+                <Icon type="md-add"/>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -35,7 +31,7 @@
 import Emitter from '../../mixins/emitter';
 import HandleEscapeMixin from './handleEscapeMixin';
 import Prefixes from './prefixMixin';
-import {clamp} from './utils';
+import { clamp } from './utils';
 
 export default {
     name: 'RecommendedColors',
@@ -60,7 +56,7 @@ export default {
             up: -normalStep,
             down: normalStep,
             powerKey: 'shiftKey',
-            grid: {x: 1, y: 1},
+            grid: { x: 1, y: 1 },
             rows,
             columns,
         };
@@ -91,7 +87,7 @@ export default {
 
             this.blurColor();
 
-            const grid = {...this.grid};
+            const grid = { ...this.grid };
 
             if (e[this.powerKey]) {
                 if (direction < 0) {
@@ -130,14 +126,24 @@ export default {
             const colorId = target.dataset.colorId || target.parentElement.dataset.colorId;
 
             if (colorId) {
-                this.blurColor();
-                const id = Number(colorId) + 1;
-                this.grid.x = id % this.columns || this.columns;
-                this.grid.y = Math.ceil(id / this.columns);
-                this.focusColor();
+                // this.blurColor();
+                // const id = Number(colorId) + 1;
+                // this.grid.x = id % this.columns || this.columns;
+                // this.grid.y = Math.ceil(id / this.columns);
+                // this.focusColor();
                 this.$emit('picker-color', this.list[colorId]);
-                this.$emit('change', {hex: this.list[colorId], source: 'hex'});
+                this.$emit('change', { hex: this.list[colorId], source: 'hex' });
             }
+        },
+        deleteColor(e, index) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.$emit('delete-recommend-color', index);
+        },
+        setRecommendColor(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.$emit('save-recommend-color');
         },
         lineBreak(list, index) {
             if (!index) {

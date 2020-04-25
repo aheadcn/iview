@@ -13,20 +13,20 @@
     margin: 0;
     padding: 0;
     width: 80px;
-    height: @input-height-base;
-    line-height: @input-height-base;
+    height: inherit;
+    line-height: inherit;
     vertical-align: middle;
     border: 1px solid @border-color-base;
     border-radius: @btn-border-radius;
     overflow: hidden;
     cursor: default;
+    background: inherit;
 
     &-handler-wrap {
         width: 22px;
-        height: 100%;
-        border-left: 1px solid @border-color-base;
+        height: inherit;
         border-radius: @radius-wrap;
-        background: #fff;
+        background: @input-bg ;
         position: absolute;
         top: 0;
         right: 0;
@@ -40,27 +40,26 @@
 
     &-handler-up {
         cursor: pointer;
+        margin-top: 2px;
         &-inner {
             top: 1px;
         }
     }
 
     &-handler-down {
-        border-top: 1px solid @border-color-base;
-        top: -1px;
+        top: 0px;
         cursor: pointer;
     }
 
     &-handler {
         display: block;
         width: 100%;
-        height: @input-height-base / 2;
+        height: 50%;
         line-height: 0;
         text-align: center;
         overflow: hidden;
         color: #999;
         position: relative;
-
         &:hover &-up-inner,
         &:hover &-down-inner {
             color: tint(@primary-color, 20%);
@@ -94,21 +93,21 @@
 
     &-input-wrap {
         overflow: hidden;
-        height: @input-height-base;
+        height: inherit;
     }
 
     &-input {
         width: 100%;
-        height: @input-height-base;
-        line-height: @input-height-base;
-        padding: 0 7px;
+        height: inherit;
+        line-height: inherit;
         text-align: left;
         outline: 0;
         -moz-appearance: textfield;
-        color: #666;
+        color: inherit;
         border: 0;
         border-radius: @btn-border-radius;
         transition: all @transition-time linear;
+        background-color: @input-bg;
 
         &[disabled] {
             .disabled();

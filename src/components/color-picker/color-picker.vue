@@ -10,7 +10,7 @@
                 :name="name"
                 :value="currentValue"
                 type="hidden">
-            <Icon :type="arrowType" :custom="customArrowType" :size="arrowSize" :class="arrowClasses"></Icon>
+            <!-- <Icon :type="arrowType" :custom="customArrowType" :size="arrowSize" :class="arrowClasses"></Icon>-->
             <div
                 ref="input"
                 :tabindex="disabled ? undefined : 0"
@@ -18,17 +18,14 @@
                 @keydown.tab="onTab"
                 @keydown.esc="onEscape"
                 @keydown.up="onArrow"
-                @keydown.down="onArrow"
-            >
+                @keydown.down="onArrow">
                 <div :class="[prefixCls + '-color']">
                     <div
                         v-show="value === '' && !visible"
                         :class="[prefixCls + '-color-empty']">
-                        <i :class="[iconPrefixCls, iconPrefixCls + '-ios-close']"></i>
+                        <!--  <i :class="[iconPrefixCls, iconPrefixCls + '-ios-close']"></i>-->
                     </div>
-                    <div
-                        v-show="value || visible"
-                        :style="displayedColorStyle"></div>
+                    <div v-show="value || visible" :style="displayedColorStyle"></div>
                 </div>
             </div>
         </div>
@@ -45,6 +42,7 @@
                 <transition name="fade">
                     <div
                         v-if="visible"
+                        @click.stop="stopClick"
                         :class="[prefixCls + '-picker']">
                         <div :class="[prefixCls + '-picker-wrapper']">
                             <div :class="[prefixCls + '-picker-panel']">
@@ -53,15 +51,13 @@
                                     v-model="saturationColors"
                                     :focused="visible"
                                     @change="childChange"
-                                    @keydown.native.tab="handleFirstTab"
-                                ></Saturation>
+                                    @keydown.native.tab="handleFirstTab">
+                                </Saturation>
                             </div>
                             <div
                                 v-if="hue"
                                 :class="[prefixCls + '-picker-hue-slider']">
-                                <Hue
-                                    v-model="saturationColors"
-                                    @change="childChange"></Hue>
+                                <Hue v-model="saturationColors" @change="childChange"></Hue>
                             </div>
                             <div
                                 v-if="alpha"
@@ -74,17 +70,22 @@
                                 v-if="colors.length"
                                 :list="colors"
                                 :class="[prefixCls + '-picker-colors']"
-                                @picker-color="handleSelectColor"></recommend-colors>
+                                @picker-color="handleSelectColor"
+                                @delete-recommend-color="handleDeleteColor"
+                                @save-recommend-color="handleRecommendColor">
+                            </recommend-colors>
                             <recommend-colors
                                 v-if="!colors.length && recommend"
                                 :list="recommendedColor"
                                 :class="[prefixCls + '-picker-colors']"
-                                @picker-color="handleSelectColor"></recommend-colors>
+                                @picker-color="handleSelectColor" @save-recommend-color="handleRecommendColor">
+                            </recommend-colors>
                         </div>
                         <div :class="[prefixCls + '-confirm']">
                             <span :class="confirmColorClasses">
                                 <template v-if="editable">
-                                    <i-input :value="formatColor" size="small" @on-enter="handleEditColor" @on-blur="handleEditColor"></i-input>
+                                    <i-input :value="formatColor" size="small" @on-enter="handleEditColor"
+                                             @on-blur="handleEditColor"></i-input>
                                 </template>
                                 <template v-else>{{formatColor}}</template>
                             </span>
@@ -95,7 +96,10 @@
                                 @click.native="handleClear"
                                 @keydown.enter="handleClear"
                                 @keydown.native.esc="closer"
-                            >{{t('i.datepicker.clear')}}</i-button>
+                                class="clear-btn"
+                                :class="[prefixCls + '-clear-btn']"
+                            >{{t('i.datepicker.clear')}}
+                            </i-button>
                             <i-button
                                 ref="ok"
                                 :tabindex="0"
@@ -105,7 +109,9 @@
                                 @keydown.native.tab="handleLastTab"
                                 @keydown.enter="handleSuccess"
                                 @keydown.native.esc="closer"
-                            >{{t('i.datepicker.ok')}}</i-button>
+                                style="width:60px;"
+                            >{{t('i.datepicker.ok')}}
+                            </i-button>
                         </div>
                     </div>
                 </transition>
@@ -116,7 +122,7 @@
 
 <script>
 import tinycolor from 'tinycolor2';
-import {directive as clickOutside} from 'v-click-outside-x';
+import { directive as clickOutside } from 'v-click-outside-x';
 import TransferDom from '../../directives/transfer-dom';
 import Drop from '../../components/select/dropdown.vue';
 import RecommendColors from './recommend-colors.vue';
@@ -127,17 +133,17 @@ import iInput from '../input/input.vue';
 import iButton from '../button/button.vue';
 import Icon from '../icon/icon.vue';
 import Locale from '../../mixins/locale';
-import {oneOf} from '../../utils/assist';
+import { oneOf } from '../../utils/assist';
 import Emitter from '../../mixins/emitter';
 import Prefixes from './prefixMixin';
-import {changeColor, toRGBAString} from './utils';
+import { changeColor, toRGBAString } from './utils';
 
 export default {
     name: 'ColorPicker',
 
-    components: {Drop, RecommendColors, Saturation, Hue, Alpha, iInput, iButton, Icon},
+    components: { Drop, RecommendColors, Saturation, Hue, Alpha, iInput, iButton, Icon },
 
-    directives: {clickOutside, TransferDom},
+    directives: { clickOutside, TransferDom },
 
     mixins: [Emitter, Locale, Prefixes],
 
@@ -179,7 +185,7 @@ export default {
             validator(value) {
                 return oneOf(value, ['small', 'large', 'default']);
             },
-            default () {
+            default() {
                 return !this.$IVIEW || this.$IVIEW.size === '' ? 'default' : this.$IVIEW.size;
             }
         },
@@ -209,7 +215,7 @@ export default {
         },
         transfer: {
             type: Boolean,
-            default () {
+            default() {
                 return !this.$IVIEW || this.$IVIEW.transfer === '' ? false : this.$IVIEW.transfer;
             }
         },
@@ -230,7 +236,6 @@ export default {
             dragging: false,
             visible: false,
             recommendedColor: [
-                '#2d8cf0',
                 '#19be6b',
                 '#ff9900',
                 '#ed4014',
@@ -299,8 +304,8 @@ export default {
         inputClasses() {
             return [
                 `${this.prefixCls}-input`,
-                `${this.inputPrefixCls}`,
-                `${this.inputPrefixCls}-${this.size}`,
+                // `${this.inputPrefixCls}`,
+                // `${this.inputPrefixCls}-${this.size}`,
                 {
                     [`${this.prefixCls}-focused`]: this.visible,
                     [`${this.prefixCls}-disabled`]: this.disabled,
@@ -317,10 +322,15 @@ export default {
             ];
         },
         displayedColorStyle() {
-            return {backgroundColor: toRGBAString(this.visible ? this.saturationColors.rgba : tinycolor(this.value).toRgb())};
+            // eslint-disable-next-line no-console
+            console.log(this.value);
+            if (this.value === 'transparent') {
+                return 'background: linear-gradient(160deg, transparent 49.5%, red 0px, red 51.5%, transparent 0px) rgb(238, 241, 246);';
+            }
+            return { backgroundColor: toRGBAString(this.visible ? this.saturationColors.rgba : tinycolor(this.value).toRgb()) };
         },
         formatColor() {
-            const {format, saturationColors} = this;
+            const { format, saturationColors } = this;
 
             if (format) {
                 if (format === 'hsl') {
@@ -344,7 +354,7 @@ export default {
 
             return saturationColors.hex;
         },
-        confirmColorClasses () {
+        confirmColorClasses() {
             return [
                 `${this.prefixCls}-confirm-color`,
                 {
@@ -353,7 +363,7 @@ export default {
             ];
         },
         // 3.4.0, global setting customArrow 有值时，arrow 赋值空
-        arrowType () {
+        arrowType() {
             let type = 'ios-arrow-down';
 
             if (this.$IVIEW) {
@@ -366,7 +376,7 @@ export default {
             return type;
         },
         // 3.4.0, global setting
-        customArrowType () {
+        customArrowType() {
             let type = '';
 
             if (this.$IVIEW) {
@@ -377,7 +387,7 @@ export default {
             return type;
         },
         // 3.4.0, global setting
-        arrowSize () {
+        arrowSize() {
             let size = '';
 
             if (this.$IVIEW) {
@@ -417,7 +427,7 @@ export default {
                 }
 
                 if (this.transfer) {
-                    const {$el} = this.$refs.drop;
+                    const { $el } = this.$refs.drop;
                     if ($el === event.target || $el.contains(event.target)) {
                         return;
                     }
@@ -472,7 +482,7 @@ export default {
             this.val = changeColor(color);
             this.$emit('on-active-change', this.formatColor);
         },
-        handleEditColor (event) {
+        handleEditColor(event) {
             const value = event.target.value;
             this.handleSelectColor(value);
         },
@@ -507,6 +517,16 @@ export default {
                 this.visible = true;
             }
         },
+        handleRecommendColor() {
+            this.$emit('save-recommend-color', this.formatColor);
+        },
+        handleDeleteColor(index) {
+            this.$emit('delete-recommend-color', index);
+        },
+        stopClick(event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
     },
 };
 </script>

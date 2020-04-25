@@ -17,7 +17,7 @@
                     </Poptip>
                 </div> -->
                 <div>
-                    <Poptip title="提示标题" content="标签一的内容">
+                    <Poptip placement="bottom-end" padding="0">
                         <Button id="aaa">点击显示</Button>
                         <div slot="content">
                             <Button @click='loadData(15)'>15条数据</Button>

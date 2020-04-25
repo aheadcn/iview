@@ -230,7 +230,7 @@
             },
             handleMouseenter () {
                 if (this.disabled) return;
-                
+
                 if (this.trigger !== 'hover' || this.confirm) {
                     return false;
                 }
